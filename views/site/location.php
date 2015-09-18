@@ -1,29 +1,25 @@
 <?php
     $this->title = 'Location';
     use dosamigos\datepicker\DatePicker;
-    
-?>
 
+?>
+       
 <link href="../css/maps.css"/>
-<div id="panel">
+<div id="panel" style="margin-top: -50px;">
 <!--    <input onclick="clearMarkers();" type=button value="Hide Markers">
     <input onclick="showMarkers();" type=button value="Show All Markers">
     <input onclick="deleteMarkers();" type=button value="Delete Markers">-->
-    <div class="col-lg-1">
-        <select id="calamviec" onchange="chonngaylamviec();">
+    <div class="col-lg-2">
+        <select id="calamviec" onchange="chonngaylamviec();" style="width: 160px;">
             <option value="1" <?php if($ca==1){echo 'selected';}?>>Ca sáng</option>
             <option value="2" <?php if($ca==2){echo 'selected';}?>>Ca chiều </option>
             <option value="3" <?php if($ca==3){echo 'selected';}?>>Ca tối </option>
         </select>
-    </div>
-    <div class="col-lg-1" style="margin-right: 15px;">
-        <select id="thoigian">
+        <select id="thoigian" style="width: 160px;">
             <option value="1" >Thời gian T1</option>
             <option value="2">Thời gian T2</option>
             <option value="3" selected>Thời gian T3</option>
         </select>
-    </div>
-    <div class="col-lg-2" style="margin-top: -5px;">
         <?=
             DatePicker::widget([
                 'name' => 'date', 
@@ -40,52 +36,106 @@
             ])
         ?>
     </div>
+    <div class="col-lg-4">
+        <div class="row">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Mã vận đơn:</span>
+                <input type="text" id="idorder" class="form-control" placeholder="Nhập mã vận đơn" aria-describedby="basic-addon1">
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-group " >
+                <span class="input-group-addon" id="basic-addon1">Số Shiper:</span>
+                <input type="text" id="socum" class="form-control" aria-describedby="basic-addon1" onchange="choncum();" value="<?=$socum?>">
+            </div>
+            
+        </div>
+    </div>
+     <div class="col-lg-2">
+        <div class="row">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"> T1:</span>
+                <input type="text" id="thoigianhoatdongt1" onchange="thoigianhoatdong(1);"  value="<?=  round($thoigiantheot1,2)?>"  class="form-control" placeholder="Thời gian" aria-describedby="basic-addon1">
+                <span class="input-group-addon" id="basic-addon1"> giờ </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"> T2:</span>
+                <input type="text" id="thoigianhoatdongt2" onchange="thoigianhoatdong(2);"  value="<?=  round($thoigiantheot2,2)?>" class="form-control" placeholder="Thời gian" aria-describedby="basic-addon1">
+                <span class="input-group-addon" id="basic-addon1"> giờ </span>
+            </div>
+        </div>
+         <div class="row">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"> T3:</span>
+                <input type="text" id="thoigianhoatdongt3" onchange="thoigianhoatdong(3);" value="<?=  round($thoigiantheot3,2)?>" class="form-control" placeholder="Thời gian" aria-describedby="basic-addon1">
+                <span class="input-group-addon" id="basic-addon1"> giờ </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2">
+<!--        <input onclick="phanchia();" type=button value="Phân chia">-->
+        <div class="input-group">
+            <input type="text" id="xoamavandon" class="form-control" placeholder="Mã vận đơn">
+            <span class="input-group-btn">
+                <button class="btn btn-default" onclick="xoamavandon();" type="button">Xóa!</button>
+            </span>
+          </div>
+        <input style="width: 78px;" onclick="xoacuoi();" type=button value="Xóa cuối">
+        <input style="width: 78px;" onclick="xoahet();" type=button value="Xóa hết">
+    </div>
+    <div class="col-lg-2">
+        <select id="inkhuvuc" onchange="inkhuvuc();">
+            <option  value="-1" selected="selected" > Chọn cụm để in </option>
+            <?php foreach ($tamcum as $key=>$val){?>
+                <option value="<?=$key?>" >Cụm thứ <?=$key?> </option>
+            <?php }?>
+        </select>
+    </div>
     <input id="pac-input" class="controls" style="width: 500px;margin: 10px;" type="text" placeholder="Tìm kiếm địa chỉ khách hàng...">
-    <span >Mã vận đơn: </span><input id="idorder" style="width: 50px;"  />
-    <span >Số Shiper: </span><input id="socum" style="width: 30px;" onchange="choncum();" value="<?=$socum?>"/>
-    <span >Thời gian: </span><input id="thoigianhoatdong" style="width: 30px;" onchange="thoigianhoatdong();" value="<?=$thoigianhoatdong?>"/> giờ
-    <input onclick="phanchia();" type=button value="Phân chia">
     <div id="map" style="float:left;width:1000px;height:600px;"></div>
     <!--    <div class="col-lg-2">
         <input onclick="hienthibien();" type=button value="Vẽ đường biên ">
         <input onclick="chonngaylamviec();" type=button value="Ẩn đường biên ">
     </div>-->
-    <p></p>
-    <ul>
-        <li>Số đơn T1: 
-        <?php
-            $i=0;
-            foreach ($location as $val){
-                if($val['time']==1){
-                    $i++;
-                }
-            }
-            echo $i.' đơn';
-        ?>
-        </li>
-        <li>Số đơn T2:   
+    <div style="float: right; margin-top: -600px;">
+        <ul>
+            <li>Số đơn T1: 
             <?php
                 $i=0;
                 foreach ($location as $val){
-                    if($val['time']==2){
+                    if($val['time']==1){
                         $i++;
                     }
                 }
                 echo $i.' đơn';
             ?>
-        </li>
-        <li>Số đơn T3:  
-            <?php
-                $i=0;
-                foreach ($location as $val){
-                    if($val['time']==3){
-                        $i++;
+            </li>
+            <li>Số đơn T2:   
+                <?php
+                    $i=0;
+                    foreach ($location as $val){
+                        if($val['time']==2){
+                            $i++;
+                        }
                     }
-                }
-                echo $i.' đơn';
-            ?>
-        </li>
-    </ul>
+                    echo $i.' đơn';
+                ?>
+            </li>
+            <li>Số đơn T3:  
+                <?php
+                    $i=0;
+                    foreach ($location as $val){
+                        if($val['time']==3){
+                            $i++;
+                        }
+                    }
+                    echo $i.' đơn';
+                ?>
+            </li>
+        </ul>
+    </div>
 </div>
 
 
@@ -116,6 +166,7 @@
     <?php
         }
     ?>
+
     function initMap() {
         var haightAshbury = {lat: 20.9930851, lng: 105.8259845};
         map = new google.maps.Map(document.getElementById('map'), {
@@ -127,6 +178,7 @@
         // This event listener will call addMarker() when the map is clicked.
         map.addListener('click', function(event) {
           addMarker(event.latLng);
+          
         });
         
         // Create the search box and link it to the UI element.
@@ -224,6 +276,70 @@
         ?>
                 
     }
+    function inkhuvuc(){
+        var e2          =   document.getElementById("inkhuvuc");
+        var inkhuvuc   =   e2.options[e2.selectedIndex].value;
+        if(inkhuvuc!=-1){
+            var e1          =   document.getElementById("calamviec");
+            var calamviec   =   e1.options[e1.selectedIndex].value;
+            var date        =   document.getElementById('location-date').value;
+            var socum        =   document.getElementById('socum').value;
+            
+            window.open("/site/location?"
+            +'ngay='+date +'&ca='+calamviec+'&socum='+socum+'&inkhuvuc=' +inkhuvuc
+            ,
+            '_blank'
+            );
+        }
+    }
+    function xoacuoi(){
+        if (window.XMLHttpRequest) {
+              // code for IE7+, Firefox, Chrome, Opera, Safari
+              xmlhttp=new XMLHttpRequest();
+        } else { // code for IE6, IE5
+              xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange=function() {
+              if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+              }
+        }
+        xmlhttp.open("GET","/location/delete?id="+'<?=end($location)['id']?>',true);
+        xmlhttp.send();
+        phanchia();
+    }
+    function xoamavandon(){
+        if (window.XMLHttpRequest) {
+              // code for IE7+, Firefox, Chrome, Opera, Safari
+              xmlhttp=new XMLHttpRequest();
+        } else { // code for IE6, IE5
+              xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange=function() {
+              if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+              }
+        }
+        var xoamavandon        =   document.getElementById('xoamavandon').value;
+        xmlhttp.open("GET","/location/index?xoamavandon="+xoamavandon,true);
+        xmlhttp.send();
+        phanchia();
+    }
+    function xoahet(){
+        if(confirm("Bạn chắc chắn muốn xóa toàn bộ dữ liệu này?")){
+            if (window.XMLHttpRequest) {
+                  // code for IE7+, Firefox, Chrome, Opera, Safari
+                  xmlhttp=new XMLHttpRequest();
+            } else { // code for IE6, IE5
+                  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange=function() {
+                  if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                  }
+            }
+            xmlhttp.open("GET","/location/index?xoahet=1&date="+'<?=end($location)['date']?>'+'&session='+'<?=end($location)['session']?>',true);
+            xmlhttp.send();
+            phanchia();
+        }
+    }
     function phanchia(){
         var e1          =   document.getElementById("calamviec");
         var calamviec   =   e1.options[e1.selectedIndex].value;
@@ -320,9 +436,11 @@
             label: thoigian,
             calamviec:calamviec,
             date: date,
+            draggable: true ,
+            radius: 2000,
         });
-        str='x='+location.G
-            +'&y='+location.K
+        str='x='+location[Object.keys(location)[0]]
+            +'&y='+location[Object.keys(location)[1]]
             +'&time='+thoigian
             +'&date='+date
             +'&session='+calamviec
@@ -330,6 +448,8 @@
         insertlocation(str);
         document.getElementById('idorder').value='';
         markers.push(marker);
+       
+                
     }
 
     // Sets the map on all markers in the array.
@@ -354,15 +474,21 @@
       clearMarkers();
       markers = [];
     }
-    function thoigianhoatdong(){
+    function thoigianhoatdong( t ){
         lamviecmotlan++;
         if(lamviecmotlan==1){
             var e1          =   document.getElementById("calamviec");
             var calamviec   =   e1.options[e1.selectedIndex].value;
             var date        =   document.getElementById('location-date').value;
-            var thoigianhoatdong        =   document.getElementById('thoigianhoatdong').value;
+            var thoigianhoatdongt3        =   document.getElementById('thoigianhoatdongt3').value;
+            var thoigianhoatdongt2        =   document.getElementById('thoigianhoatdongt2').value;
+            var thoigianhoatdongt1        =   document.getElementById('thoigianhoatdongt1').value;
             window.open("/site/location?"
-                    +'ngay='+date +'&ca='+calamviec+'&thoigianhoatdong='+thoigianhoatdong
+                    +'ngay='+date +'&ca='+calamviec
+                    +'&thoigianhoatdongt3='+thoigianhoatdongt3
+                    +'&thoigianhoatdongt2='+thoigianhoatdongt2
+                    +'&thoigianhoatdongt1='+thoigianhoatdongt1
+                    +'&t='+t
                     ,
                     '_parent'
                     );
@@ -430,5 +556,5 @@
 
 </script>
 <script async defer
-    src="https://maps.googleapis.com/maps/api/js?signed_in=true&callback=initMap&libraries=places">
+    src="https://maps.googleapis.com/maps/api/js?signed_in=true&callback=initMap&libraries=places&sensor=false">
 </script>

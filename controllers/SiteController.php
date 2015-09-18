@@ -78,14 +78,49 @@ class SiteController extends Controller
             }
 
         }
-        $thoigianhoatdong=4;
-        if(isset($_GET['thoigianhoatdong'])){
-           $thoigianhoatdong=$_GET['thoigianhoatdong'];
-           if($thoigianhoatdong<=0){
-               $thoigianhoatdong=4;
-           }
+        $thoigiantheot1=2;
+        $thoigiantheot2=3;
+        $thoigiantheot3=4;
+
+        if(isset($_GET['t'])){
+            $t=$_GET['t'];
+            $thoigiantheot1=$_GET['thoigianhoatdongt1'];
+            $thoigiantheot2=$_GET['thoigianhoatdongt2'];
+            $thoigiantheot3=$_GET['thoigianhoatdongt3'];
+            if($t==3){
+                if($thoigiantheot3<=0){
+                    $thoigiantheot3=4;
+                }
+                if($thoigiantheot3<=$thoigiantheot2){
+                    $thoigiantheot2=$thoigiantheot3;
+                }
+                if($thoigiantheot3<=$thoigiantheot1){
+                    $thoigiantheot1=$thoigiantheot3;
+                }
+            }
+            if($t==2){
+                if($thoigiantheot2<=0){
+                    $thoigiantheot2=3;
+                }
+                if($thoigiantheot3<=$thoigiantheot2){
+                    $thoigiantheot3=$thoigiantheot2;
+                }
+                if($thoigiantheot2<=$thoigiantheot1){
+                    $thoigiantheot1=$thoigiantheot2;
+                }
+            }
+            if($t==1){
+                if($thoigiantheot1<=0){
+                    $thoigiantheot1=2;
+                }
+                if($thoigiantheot3<=$thoigiantheot1){
+                    $thoigiantheot3=$thoigiantheot1;
+                }
+                if($thoigiantheot2<=$thoigiantheot1){
+                    $thoigiantheot2=$thoigiantheot1;
+                }
+            }
         }
-        
         if(isset($_GET['ngay'])){
            $date= date("Y-m-d", strtotime($_GET['ngay']));
            $ca=$_GET['ca'];
@@ -93,15 +128,26 @@ class SiteController extends Controller
         $location = Location::find()->where(['date' => $date,'session'=>$ca])->all();
         //$vitricongty=['x'=> 20.9930851, 'y'=> 105.8259845];
         $vitricongty = $this->tamarray($location);
-                
-        $socum=intval($this->tongkhoangcach($location,$vitricongty)/($thoigianhoatdong*35/1000));
         
+        $khoangcacht1=$this->tongkhoangcachtheot($location, ['x'=> 20.9930851, 'y'=> 105.8259845], 1);
+        $khoangcacht2=$this->tongkhoangcachtheot($location, ['x'=> 20.9930851, 'y'=> 105.8259845], 2);
+        $khoangcacht3=$this->tongkhoangcachtheot($location, ['x'=> 20.9930851, 'y'=> 105.8259845], 3);
+        
+        $socum=intval($khoangcacht1/($thoigiantheot1*35/1000));
+        if($socum<intval($khoangcacht2/($thoigiantheot2*30/1000))){
+            $socum=intval($khoangcacht2/($thoigiantheot2*30/1000));
+        }else if($socum<intval($khoangcacht3/($thoigiantheot3*30/1000))){
+            $socum=intval($khoangcacht3/($thoigiantheot3*30/1000));
+        }
         if(isset($_GET['socum'])){
             $socum=$_GET['socum'];
             if($socum<1){
                 $socum=1;
             }
-            $thoigianhoatdong=$this->tongkhoangcach($location,$vitricongty)*1000/(35*$socum);
+            
+            $thoigiantheot1=$khoangcacht1*1000/(35*$socum);
+            $thoigiantheot2=$khoangcacht2*1000/(30*$socum);
+            $thoigiantheot3=$khoangcacht3*1000/(30*$socum);
         }
         
         if($socum>count($location)-1){
@@ -155,6 +201,17 @@ class SiteController extends Controller
         
         //ve lai diem bien
         $diembientheocum =  $this->diembientheocum($phancum);
+        
+        if(isset($_GET['inkhuvuc'])){
+            if($_GET['inkhuvuc']!=-1){
+                return $this->render('inkhuvuc', [
+                    'array' =>  $this->bandokhuvuc($phancum[$_GET['inkhuvuc']], ['x'=> 20.9930851, 'y'=> 105.8259845]) ,
+                    ]
+                );
+            }
+        }
+        
+       
         //lay thoi gian hien tai lam mac dinh cua ngay hom do
         return $this->render('location', [
             'location' => $location,
@@ -165,10 +222,19 @@ class SiteController extends Controller
             'phancum'=>$phancum,
             'diembientheocum' =>$diembientheocum,
             'socum'=>$socum,
-            'thoigianhoatdong'=>$thoigianhoatdong,
+            'thoigiantheot1'=>$thoigiantheot1,
+            'thoigiantheot2'=>$thoigiantheot2,
+            'thoigiantheot3'=>$thoigiantheot3,
         ]);
     }
     
+    public function actionInkhuvuc($array){
+        return $this->render('inkhuvuc', [
+            'array' => $array,
+            ]
+        );
+    }
+
     protected function vitriduonggannhat($tamcum, $vitrixet, $vitricongty){
         $vtn=0;
         $gtln=-1;
@@ -347,6 +413,71 @@ class SiteController extends Controller
         ]);
     }
     
+    protected function tongkhoangcachtheot($array, $vitricongty, $t){
+        $array1=[];
+        if($t==1){
+            foreach ($array as $val){
+                if($val['time']==1){
+                    array_push($array1, $val);
+                }
+            }
+            return $this->tongkhoangcach($array1, $vitricongty);
+        }else if($t==2){
+            $array1=[];
+            foreach ($array as $val){
+                if($val['time']==1){
+                    array_push($array1, $val);
+                }
+            }
+            $array2=[];
+            foreach ($array as $val){
+                if($val['time']==2){
+                    array_push($array2, $val);
+                }
+            }
+            $diemdau=  $this->vitricuoicuatongkhoangcach($array1, $vitricongty);
+            return $this->tongkhoangcach($array1, $vitricongty)+$this->tongkhoangcach($array2, $diemdau);
+        }else{
+            $array1=[];
+            foreach ($array as $val){
+                if($val['time']==1){
+                    array_push($array1, $val);
+                }
+            }
+            $array2=[];
+            foreach ($array as $val){
+                if($val['time']==2){
+                    array_push($array2, $val);
+                }
+            }
+            $array3=[];
+            foreach ($array as $val){
+                if($val['time']==3){
+                    array_push($array3, $val);
+                }
+            }
+            $diemdau1=  $this->vitricuoicuatongkhoangcach($array1, $vitricongty);
+            $diemdau2=  $this->vitricuoicuatongkhoangcach($array2, $diemdau1);
+            return  $this->tongkhoangcach($array1, $vitricongty)
+                    +$this->tongkhoangcach($array2, $diemdau1)
+                    +$this->tongkhoangcach($array3, $diemdau2);
+        }
+        return $this->tongkhoangcach($arrayluu, $vitricongty);
+    }
+
+    protected function bandokhuvuc($array, $vitrixuatphat){
+        $bando=[];
+        array_push($bando, $vitrixuatphat);
+        $tam=$vitrixuatphat;
+        while (count($array)>0){
+            $vt=  $this->vitrigannhat($array, $tam);
+            $tam= $array[$vt];
+            array_push($bando, $tam);
+            unset($array[$vt]);
+        }
+        return $bando;
+    }
+
     public function actionRoutes()
     {
         return $this->render('routes');
@@ -593,6 +724,17 @@ class SiteController extends Controller
         return $tongkhoangcach;      
         
     }
+    protected function vitricuoicuatongkhoangcach($array, $vitricongty){
+        $arrayluu=$array;
+        $diemdau=$vitricongty;
+        while (count($arrayluu)>0){
+            $vitrigannhat=  $this->vitrigannhat($arrayluu, $diemdau);
+            $diemdau=$arrayluu[$vitrigannhat];
+            unset($arrayluu[$vitrigannhat]);
+        }
+        return $diemdau;      
+        
+    }
     protected function duongdingannhat($array,$company){
         $arrayluu=$array;
         $arrayduong=[];
@@ -833,5 +975,7 @@ class SiteController extends Controller
     protected function dauduongthang($diem1, $diem2, $diem){
         return ($diem2['y']-$diem1['y'])*($diem['x']-$diem1['x'])
                 - ($diem2['x']-$diem1['x'])*($diem['y']-$diem1['y']);
+    
     }
+    
 }

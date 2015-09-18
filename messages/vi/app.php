@@ -6,6 +6,8 @@
  * and open the template in the editor.
  */
 return [
+    'Idorder'=>'Mã vận đơn',
+    'Session'=>'Ca',
     'Date'=>'Ngày',
     'Time'=>'Thời gian',
     'Y'=>'Tọa độ y',

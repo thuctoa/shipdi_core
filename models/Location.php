@@ -14,6 +14,7 @@ use Yii;
  * @property integer $session
  * @property string $date
  * @property string $idorder
+ * @property string $address
  */
 class Location extends \yii\db\ActiveRecord
 {
@@ -31,11 +32,12 @@ class Location extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['x', 'y', 'session', 'date', 'idorder'], 'required'],
+            [['x', 'y', 'session', 'date', 'idorder', 'address'], 'required'],
             [['x', 'y'], 'number'],
             [['time', 'session'], 'integer'],
             [['date'], 'safe'],
-            [['idorder'], 'string', 'max' => 11]
+            [['idorder'], 'string', 'max' => 11],
+            [['address'], 'string', 'max' => 2048]
         ];
     }
 
@@ -52,6 +54,7 @@ class Location extends \yii\db\ActiveRecord
             'session' => Yii::t('app', 'Session'),
             'date' => Yii::t('app', 'Date'),
             'idorder' => Yii::t('app', 'Idorder'),
+            'address' => Yii::t('app', 'Address'),
         ];
     }
 }
