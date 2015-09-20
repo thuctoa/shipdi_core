@@ -1,8 +1,28 @@
 <link href="../css/maps.css"/>
 <div id="map" style="float:left;width:1000px;height:600px;"></div>
-<div id="right-panel">
+<!--<div id="right-panel">
   <p>Total Distance: <span id="total"></span></p>
-</div>
+</div>-->
+<?php
+    if(count($sobando)>1){
+        $len=  count($sobando);
+
+            for($i=0;$i<$len;$i++){
+?>
+                <a href="/site/location?ngay=<?=$_GET['ngay']?>&ca=<?=$_GET['ca']?>&socum=<?=$_GET['socum']?>&inkhuvuc=<?=$_GET['inkhuvuc']?>&tam=<?=$i?>" 
+                    <?php
+                        if($_GET['tam']==$i){
+                    ?>
+                   style="background:  #c7bfbf;"
+                    <?php
+                        }
+                    ?>
+                    >Tấm <?=$i?>, </a>
+<?php
+            }
+    }
+?>
+
 <script>
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -21,6 +41,7 @@
             computeTotalDistance(directionsDisplay.getDirections());
         });
         <?php
+            $array=$sobando[$_GET['tam']];
             if(count($array)>10){
         ?>
             var diemdau={
@@ -112,7 +133,7 @@
             total += myroute.legs[i].distance.value;
         }
         total = total / 1000;
-        document.getElementById('total').innerHTML = total + ' km';
+//        document.getElementById('total').innerHTML = total + ' km';
     }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&callback=initMap"

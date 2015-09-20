@@ -204,13 +204,73 @@ class SiteController extends Controller
         
         if(isset($_GET['inkhuvuc'])){
             if($_GET['inkhuvuc']!=-1){
+                $vitridau= ['x'=> 20.9930851, 'y'=> 105.8259845];
+                $bandokhuvuc=$this->bandokhuvuc($phancum[$_GET['inkhuvuc']],$vitridau);
+                
+                $sobando=[];
+                if(count($bandokhuvuc)>9){
+                    while(count($bandokhuvuc)>0){
+                        $bandocon=[];
+                        $i=0;
+                        
+                        if(count($sobando)>0){
+                             array_push($bandocon, $vitridau);
+                        }
+                        while($i<9){
+                            if($i==8){
+                                $vitridau=  current($bandokhuvuc);
+                            }
+                            array_push($bandocon, array_shift($bandokhuvuc));
+                            if(count($bandokhuvuc)==0){
+                                break;
+                            }
+                            $i++;
+                        }
+                        array_push($sobando, $bandocon);
+                    }
+                    
+                }else{
+                    array_push($sobando, $bandokhuvuc);
+                }
                 return $this->render('inkhuvuc', [
-                    'array' =>  $this->bandokhuvuc($phancum[$_GET['inkhuvuc']], ['x'=> 20.9930851, 'y'=> 105.8259845]) ,
+                    'sobando'=> $sobando,
                     ]
                 );
             }
         }
         
+        if(isset($_GET['laydiachicum'])){
+            $ldcc=$_GET['laydiachicum'];
+            if($ldcc!=-1){
+                if($ldcc==-10){
+                    $laydiachitoanbo=Location::find()->where(['date' => $date,'session'=>$ca])
+                            ->orderBy('idorder')
+                            ->all();
+                    $toanbokhuvuc=[];
+                    foreach ($laydiachitoanbo as $val){
+                        $phantugop=[];
+                        $phantugop['idorder']=$val['idorder'];
+                        $phantugop['address']=$val['address'];
+                        $phantugop['khuvuc']= $this->thuockhuvuc($val['idorder'], $phancum);
+                        array_push($toanbokhuvuc, $phantugop);
+                        
+                    }
+                    return $this->render('laydiachicum', [
+                        'bandokhuvuc'=> $toanbokhuvuc,
+                        'laytoanbo'=>1,
+                        ]
+                    );
+                }else{
+                    $vitridau= ['x'=> 20.9930851, 'y'=> 105.8259845];
+                    $bandokhuvuc=$this->bandokhuvuc($phancum[$ldcc],$vitridau);
+                    return $this->render('laydiachicum', [
+                        'bandokhuvuc'=> $bandokhuvuc,
+                        'diachicum'=>$ldcc,
+                        ]
+                    );
+                }
+            }
+        }
        
         //lay thoi gian hien tai lam mac dinh cua ngay hom do
         return $this->render('location', [
@@ -227,7 +287,17 @@ class SiteController extends Controller
             'thoigiantheot3'=>$thoigiantheot3,
         ]);
     }
-    
+    protected function thuockhuvuc($mavandon, $phancum){
+        foreach ($phancum as $key=>$val){
+            foreach ($val as $value){
+                if($mavandon==$value['idorder']){
+                    return $key;
+                }
+            }
+        }
+        
+    }
+
     public function actionInkhuvuc($array){
         return $this->render('inkhuvuc', [
             'array' => $array,
@@ -469,12 +539,48 @@ class SiteController extends Controller
         $bando=[];
         array_push($bando, $vitrixuatphat);
         $tam=$vitrixuatphat;
-        while (count($array)>0){
-            $vt=  $this->vitrigannhat($array, $tam);
-            $tam= $array[$vt];
-            array_push($bando, $tam);
-            unset($array[$vt]);
+        
+        $array1=[];
+        foreach ($array as $val){
+            if($val['time']==1){
+                array_push($array1, $val);
+            }
         }
+        $array2=[];
+        foreach ($array as $val){
+            if($val['time']==2){
+                array_push($array2, $val);
+            }
+        }
+        $array3=[];
+        foreach ($array as $val){
+            if($val['time']==3){
+                array_push($array3, $val);
+            }
+        }
+        $diemdau1=  $this->vitricuoicuatongkhoangcach($array1, $vitrixuatphat);
+        $diemdau2=  $this->vitricuoicuatongkhoangcach($array2, $diemdau1);
+        
+        
+        while (count($array1)>0){
+            $vt=  $this->vitrigannhat($array1, $tam);
+            $tam= $array1[$vt];
+            array_push($bando, $tam);
+            unset($array1[$vt]);
+        }
+        while (count($array2)>0){
+            $vt=  $this->vitrigannhat($array2, $tam);
+            $tam= $array2[$vt];
+            array_push($bando, $tam);
+            unset($array2[$vt]);
+        }
+        while (count($array3)>0){
+            $vt=  $this->vitrigannhat($array3, $tam);
+            $tam= $array3[$vt];
+            array_push($bando, $tam);
+            unset($array3[$vt]);
+        }
+        
         return $bando;
     }
 

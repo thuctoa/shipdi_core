@@ -15,11 +15,12 @@
             <option value="2" <?php if($ca==2){echo 'selected';}?>>Ca chiều </option>
             <option value="3" <?php if($ca==3){echo 'selected';}?>>Ca tối </option>
         </select>
-        <select id="thoigian" style="width: 160px;">
+        <select id="thoigian" class= "tach" style="width: 160px;">
             <option value="1" >Thời gian T1</option>
             <option value="2">Thời gian T2</option>
             <option value="3" selected>Thời gian T3</option>
         </select>
+        <div class="tach"></div>
         <?=
             DatePicker::widget([
                 'name' => 'date', 
@@ -33,16 +34,11 @@
                 'clientEvents' => [
                     'change' => 'function () {chonngaylamviec();}',
                 ],
+                
             ])
         ?>
     </div>
     <div class="col-lg-4">
-        <div class="row">
-            <div class="input-group">
-                <span class="input-group-addon" id="basic-addon1">Mã vận đơn:</span>
-                <input type="text" id="idorder" class="form-control" placeholder="Nhập mã vận đơn" aria-describedby="basic-addon1">
-            </div>
-        </div>
         <div class="row">
             <div class="input-group " >
                 <span class="input-group-addon" id="basic-addon1">Số Shiper:</span>
@@ -50,6 +46,13 @@
             </div>
             
         </div>
+        <div class="row">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Mã vận đơn:</span>
+                <input type="text" id="idorder" class="form-control" placeholder="Nhập mã vận đơn" aria-describedby="basic-addon1">
+            </div>
+        </div>
+        
     </div>
      <div class="col-lg-2">
         <div class="row">
@@ -82,14 +85,39 @@
                 <button class="btn btn-default" onclick="xoamavandon();" type="button">Xóa!</button>
             </span>
           </div>
-        <input style="width: 78px;" onclick="xoacuoi();" type=button value="Xóa cuối">
-        <input style="width: 78px;" onclick="xoahet();" type=button value="Xóa hết">
+        <input style="width: 78px;" class= "tach" onclick="xoacuoi();" type=button value="Xóa cuối">
+        <input style="width: 78px;" class= "tach" onclick="xoahet();" type=button value="Xóa hết">
+        <input class="btn-info tach" 
+               onclick="<?php if(isset($_GET['phankhuvuc'])){
+                   if($_GET['phankhuvuc']==0){
+                       ?>
+                           phuckhuvuc(1);
+                    <?php
+                   }else{
+                       ?>
+                            phuckhuvuc(0);
+                           <?php
+                   }
+                }else{
+                ?>
+                phuckhuvuc(1);
+                <?php
+                }
+                ?>
+                " 
+            type=button value="Phân khu vực">
     </div>
     <div class="col-lg-2">
-        <select id="inkhuvuc" onchange="inkhuvuc();">
-            <option  value="-1" selected="selected" > Chọn cụm để in </option>
+        <select id="inkhuvuc" onclick="inkhuvuc();">
+            <option  value="-1" selected="selected" > Chọn khu vực để in </option>
             <?php foreach ($tamcum as $key=>$val){?>
-                <option value="<?=$key?>" >Cụm thứ <?=$key?> </option>
+                <option value="<?=$key?>" >Khu vực <?=$key?> </option>
+            <?php }?>
+        </select>
+        <select id="laydiachicum" class= "tach" onclick="laydiachicum();">
+            <option  value="-10" selected="selected" > Lấy địa toàn bộ</option>
+            <?php foreach ($tamcum as $key=>$val){?>
+                <option value="<?=$key?>" >Khu vực <?=$key?> </option>
             <?php }?>
         </select>
     </div>
@@ -134,6 +162,17 @@
                     echo $i.' đơn';
                 ?>
             </li>
+            <li>Tổng số đơn:  
+                <?php
+                    
+                    echo count($location).' đơn';
+                ?>
+            </li>
+            <br>
+            <?php foreach ($tamcum as $key=>$val){?>
+            <li> <?php if($ca==1){echo 'S'.$key;}if($ca==2){echo 'C'.$key;}if($ca==3){echo 'T'.$key;}?> 
+             có: <?=  count($phancum[$key])?> đơn </li>
+            <?php }?>
         </ul>
     </div>
 </div>
@@ -177,67 +216,79 @@
         });
         // This event listener will call addMarker() when the map is clicked.
         map.addListener('click', function(event) {
-          addMarker(event.latLng);
-          
+            if(document.getElementById('idorder').value){
+                addMarker(event.latLng);
+            }
         });
+        
         
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
-        
         var searchBox = new google.maps.places.SearchBox(input);
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
         
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
         // Bias the SearchBox results towards current map's viewport.
         map.addListener('bounds_changed', function() {
           searchBox.setBounds(map.getBounds());
         });
-        
+
         // Listen for the event fired when the user selects a prediction and retrieve
         // more details for that place.
+       
         searchBox.addListener('places_changed', function() {
             var places = searchBox.getPlaces();
 
             if (places.length == 0) {
               return;
             }
-            // For each place, get the icon, name and location.
-            var bounds = new google.maps.LatLngBounds();
-            places.forEach(function(place) {
-                var e           =   document.getElementById("thoigian");
-                var thoigian    =   e.options[e.selectedIndex].value;
-                var e1          =   document.getElementById("calamviec");
-                var calamviec   =   e1.options[e1.selectedIndex].value;
-                var date        =   document.getElementById('location-date').value;
+            if(document.getElementById('idorder').value){
+                // For each place, get the icon, name and location.
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function(place) {
+                    var e           =   document.getElementById("thoigian");
+                    var thoigian    =   e.options[e.selectedIndex].value;
+                    var e1          =   document.getElementById("calamviec");
+                    var calamviec   =   e1.options[e1.selectedIndex].value;
+                    var date        =   document.getElementById('location-date').value;
 
-                // Create a marker for each place.
-                var marker=new google.maps.Marker({
-                    map: map,
-                    title: place.name,
-                    position: place.geometry.location,
-                    label: thoigian,
-                    calamviec:calamviec,
-                    date: date,
+                        // Create a marker for each place.
+                        var marker=new google.maps.Marker({
+                            map: map,
+                            title: place.name,
+                            position: place.geometry.location,
+                            label: thoigian,
+                            calamviec:calamviec,
+                            date: date,
+                        });
+
+                        markers.push(marker);
+                        //insert vao database
+                        var str='x='+marker.getPosition().lat()
+                            +'&y='+marker.getPosition().lng()
+                            +'&time='+thoigian
+                            +'&date='+date
+                            +'&session='+calamviec
+                            +'&idorder='+document.getElementById('idorder').value;
+                        insertlocation(str);
+                    document.getElementById('idorder').value='';
+                    document.getElementById('pac-input').value='';
+
+                    if (place.geometry.viewport) {
+                        // Only geocodes have viewport.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
                 });
-                markers.push(marker);
-                //insert vao database
-                var str='x='+marker.getPosition().lat()
-                    +'&y='+marker.getPosition().lng()
-                    +'&time='+thoigian
-                    +'&date='+date
-                    +'&session='+calamviec
-                    +'&idorder='+document.getElementById('idorder').value;
-                insertlocation(str);
-                document.getElementById('idorder').value='';
-                if (place.geometry.viewport) {
-                    // Only geocodes have viewport.
-                    bounds.union(place.geometry.viewport);
-                } else {
-                    bounds.extend(place.geometry.location);
-                }
-            });
-            map.fitBounds(bounds);
-            map.setZoom(12);
+                map.fitBounds(bounds);
+                map.setZoom(12);
+            }else{
+                document.getElementById('pac-input').value='';
+                alert('Yêu cầu nhập mã vận đơn bắt buộc.');
+            }
         });
+        
         // Adds a marker at the center of the map.
        // addMarker(haightAshbury);
         
@@ -269,7 +320,13 @@
                 }
             }
         ?>
-              vetamcum();  
+             <?php
+                if(isset($_GET['phankhuvuc'])&&$_GET['phankhuvuc']==1){
+             ?> 
+                     vetamcum();  
+            <?php
+                }
+            ?>
             
         <?php
         }
@@ -286,7 +343,23 @@
             var socum        =   document.getElementById('socum').value;
             
             window.open("/site/location?"
-            +'ngay='+date +'&ca='+calamviec+'&socum='+socum+'&inkhuvuc=' +inkhuvuc
+            +'ngay='+date +'&ca='+calamviec+'&socum='+socum+'&inkhuvuc=' +inkhuvuc+'&tam=0'
+            ,
+            '_blank'
+            );
+        }
+    }
+    function laydiachicum(){
+        var e2          =   document.getElementById("laydiachicum");
+        var laydiachicum   =   e2.options[e2.selectedIndex].value;
+        if(laydiachicum!=-1){
+            var e1          =   document.getElementById("calamviec");
+            var calamviec   =   e1.options[e1.selectedIndex].value;
+            var date        =   document.getElementById('location-date').value;
+            var socum        =   document.getElementById('socum').value;
+            
+            window.open("/site/location?"
+            +'ngay='+date +'&ca='+calamviec+'&socum='+socum+'&laydiachicum=' +laydiachicum+'&tam=0'
             ,
             '_blank'
             );
@@ -353,7 +426,7 @@
     }
     function thongtincum(tamcum, cum){
         var coordInfoWindow = new google.maps.InfoWindow();
-        coordInfoWindow.setContent('Cụm số ' + cum);
+        coordInfoWindow.setContent('Khu vực ' + cum);
         coordInfoWindow.setPosition(tamcum);
         coordInfoWindow.open(map);
     }
@@ -368,10 +441,21 @@
         '_parent'
         );
     }
+    function phuckhuvuc(phankhuvuc){
+        var e1          =   document.getElementById("calamviec");
+        var calamviec   =   e1.options[e1.selectedIndex].value;
+        var date        =   document.getElementById('location-date').value;
+        var socum        =   document.getElementById('socum').value;
+        window.open("/site/location?"
+        +'ngay='+date +'&ca='+calamviec+'&phankhuvuc='+phankhuvuc+'&socum='+socum
+        ,
+        '_parent'
+        );
+    }
     //ve tam cum
     var diembientheocum=[];
+
     function vetamcum(){
-        
         <?php
         foreach ($diembientheocum as $key=>$val){
         ?>
