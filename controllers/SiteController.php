@@ -126,28 +126,24 @@ class SiteController extends Controller
            $ca=$_GET['ca'];
         }
         $location = Location::find()->where(['date' => $date,'session'=>$ca])->all();
-        //$vitricongty=['x'=> 20.9930851, 'y'=> 105.8259845];
-        $vitricongty = $this->tamarray($location);
+        $vitricongty=['x'=> 20.9930851, 'y'=> 105.8259845];
+       // $vitricongty = $this->tamarray($location);
         
-        $khoangcacht1=$this->tongkhoangcachtheot($location, ['x'=> 20.9930851, 'y'=> 105.8259845], 1);
-        $khoangcacht2=$this->tongkhoangcachtheot($location, ['x'=> 20.9930851, 'y'=> 105.8259845], 2);
-        $khoangcacht3=$this->tongkhoangcachtheot($location, ['x'=> 20.9930851, 'y'=> 105.8259845], 3);
-        
-        $socum=intval($khoangcacht1/($thoigiantheot1*35/1000));
-        if($socum<intval($khoangcacht2/($thoigiantheot2*30/1000))){
-            $socum=intval($khoangcacht2/($thoigiantheot2*30/1000));
-        }else if($socum<intval($khoangcacht3/($thoigiantheot3*30/1000))){
-            $socum=intval($khoangcacht3/($thoigiantheot3*30/1000));
+        $khoangcacht1=$this->tongkhoangcachtheot($location, $vitricongty, 1);
+        $khoangcacht2=$this->tongkhoangcachtheot($location, $vitricongty, 2);
+        $khoangcacht3=$this->tongkhoangcachtheot($location, $vitricongty, 3);
+        $vantoctrungbinh=30;
+        $socum=round($khoangcacht1/($thoigiantheot1*$vantoctrungbinh/1000));
+        if($socum<round($khoangcacht2/($thoigiantheot2*$vantoctrungbinh/1000))){
+            $socum=round($khoangcacht2/($thoigiantheot2*$vantoctrungbinh/1000));
+        }else if($socum<round($khoangcacht3/($thoigiantheot3*$vantoctrungbinh/1000))){
+            $socum=round($khoangcacht3/($thoigiantheot3*$vantoctrungbinh/1000));
         }
         if(isset($_GET['socum'])){
             $socum=$_GET['socum'];
             if($socum<1){
                 $socum=1;
             }
-            
-            $thoigiantheot1=$khoangcacht1*1000/(35*$socum);
-            $thoigiantheot2=$khoangcacht2*1000/(30*$socum);
-            $thoigiantheot3=$khoangcacht3*1000/(30*$socum);
         }
         
         if($socum>count($location)-1){
@@ -156,11 +152,16 @@ class SiteController extends Controller
         if($socum<1){
             $socum=1;
         }
+        //tinh trung binh khoang cach
+        $trungbinhkhoangcacht1=$khoangcacht1/$socum;
+        $trungbinhkhoangcacht2=$khoangcacht2/$socum;
+        $trungbinhkhoangcacht3=$khoangcacht3/$socum;
+        
         $diembien=  $this->diembien($location);
         $tamcum=  $this->tamcum($diembien, $socum);
         //tu so tam cum co duoc ta se ra duoc so cum
         $phancum =  $this->phamcum($tamcum, $location);
-        $tamcum=  $this->phantamlai($phancum, $tamcum);
+        //$tamcum=  $this->phantamlai($phancum, $tamcum);
         
         //phan chia du so khu vuc can thiet
         if(count($phancum)<$socum){
@@ -170,7 +171,7 @@ class SiteController extends Controller
                 $tamcum = $this->themtam($tamcum, $kvm, $phancum, $vitricongty);
                 //phan cum lai
                 $phancum =  $this->phamcum($tamcum, $location);
-                $tamcum=  $this->phantamlai($phancum, $tamcum);
+               // $tamcum=  $this->phantamlai($phancum, $tamcum);
             }
             
         }
@@ -178,7 +179,7 @@ class SiteController extends Controller
         for($j=0; $j<10;$j++){
             //$vitricongty=  $this->tamarray($tamcum);
             if(count($tamcum)>1){
-                $lenlocation=  count($location);
+                $lenlocation= 2* count($location);
                 for($i=0;$i<$lenlocation;$i++){
                     //Can bang thoi gian di chuyen tren moi cum
                     $kvm=  $this->khuvuckhoangcachmax($phancum, $vitricongty);
@@ -198,13 +199,61 @@ class SiteController extends Controller
             $phancum =  $this->phamcum($tamcum, $location);
             $tamcum=  $this->phantamlai($phancum, $tamcum);
         }
+         //tinh lai thoi gian
+        $thoigiantheot1=0;
+        $thoigiantheot2=0;
+        $thoigiantheot3=0;
+        foreach ($phancum as $val){
+            $khoangcacht1=$this->tongkhoangcachtheot($val, $vitricongty, 1);
+            $khoangcacht2=$this->tongkhoangcachtheot($val, $vitricongty, 2);
+            $khoangcacht3=$this->tongkhoangcachtheot($val, $vitricongty, 3);
+
+            $thoigiantheot1+=$khoangcacht1*1000/$vantoctrungbinh;
+            $thoigiantheot2+=$khoangcacht2*1000/$vantoctrungbinh;
+            $thoigiantheot3+=$khoangcacht3*1000/$vantoctrungbinh;
+        }
+
+//        echo $trungbinhkhoangcacht1.'<br>';
+//        echo $trungbinhkhoangcacht2.'<br>';
+//        echo $trungbinhkhoangcacht3.'<br>';
+        $thoigiantheot1=$thoigiantheot1/$socum;
+        $thoigiantheot2=$thoigiantheot2/$socum;
+        $thoigiantheot3=$thoigiantheot3/$socum;
+//        
+//        //loc cac don t1, t2 va t3 thanh 3 mang
+//        $array1=  $this->locdont($location, 1);
+//        $array2=  $this->locdont($location, 2);
+//        $array3=  $this->locdont($location, 3);
+//        
+//        $khuvuc=[];
+//        while($this->tongkhoangcachtheot($khuvuc, $vitricongty, 1)<$trungbinhkhoangcacht1){
+//            $vtg=  $this->vitrigannhat($array1, $tamcum[0]);
+//            array_push($khuvuc,$array1[$vtg] );
+//            unset($array1[$vtg]);
+//        }        
+//        while($this->tongkhoangcachtheot($khuvuc, $vitricongty, 2)<$trungbinhkhoangcacht2){
+//            $vtg=  $this->vitrigannhat($array2, $tamcum[0]);
+//            array_push($khuvuc,$array2[$vtg] );
+//            unset($array2[$vtg]);
+//        } 
+//        while($this->tongkhoangcachtheot($khuvuc, $vitricongty, 3)<$trungbinhkhoangcacht3){
+//            $vtg=  $this->vitrigannhat($array3, $tamcum[0]);
+//            array_push($khuvuc,$array3[$vtg] );
+//            unset($array3[$vtg]);
+//        } 
+//        echo $this->tongkhoangcachtheot($khuvuc, $vitricongty, 1).'<br>';
+//        echo $this->tongkhoangcachtheot($khuvuc, $vitricongty, 2).'<br>';
+//        echo $this->tongkhoangcachtheot($khuvuc, $vitricongty, 3).'<br>';
+//        $phancum[0]=$khuvuc;
+//        
+//        
         
         //ve lai diem bien
         $diembientheocum =  $this->diembientheocum($phancum);
         
         if(isset($_GET['inkhuvuc'])){
             if($_GET['inkhuvuc']!=-1){
-                $vitridau= ['x'=> 20.9930851, 'y'=> 105.8259845];
+                $vitridau= $vitricongty;
                 $bandokhuvuc=$this->bandokhuvuc($phancum[$_GET['inkhuvuc']],$vitridau);
                 
                 $sobando=[];
@@ -261,7 +310,7 @@ class SiteController extends Controller
                         ]
                     );
                 }else{
-                    $vitridau= ['x'=> 20.9930851, 'y'=> 105.8259845];
+                    $vitridau= $vitricongty;
                     $bandokhuvuc=$this->bandokhuvuc($phancum[$ldcc],$vitridau);
                     return $this->render('laydiachicum', [
                         'bandokhuvuc'=> $bandokhuvuc,
@@ -272,6 +321,7 @@ class SiteController extends Controller
             }
         }
        
+        
         //lay thoi gian hien tai lam mac dinh cua ngay hom do
         return $this->render('location', [
             'location' => $location,
@@ -287,6 +337,17 @@ class SiteController extends Controller
             'thoigiantheot3'=>$thoigiantheot3,
         ]);
     }
+    //loc don t1, t2 va t3 trong location
+    protected function locdont($location, $t){
+        $arrayt=[];
+        foreach ($location as $val){
+            if($val['time']==$t){
+                array_push($arrayt, $val);
+            }
+        }
+        return $arrayt;
+    }
+
     protected function thuockhuvuc($mavandon, $phancum){
         foreach ($phancum as $key=>$val){
             foreach ($val as $value){
@@ -341,8 +402,8 @@ class SiteController extends Controller
         if($lencum>2){
             $kvd= $this->vitriduonggannhat($tamcum, $kvm, $vitricongty);
             $kva= $this->vitriamgannhat($tamcum, $kvm, $vitricongty); 
-            if($this->tongkhoangcach($phancum[$kva], $vitricongty)
-                    >$this->tongkhoangcach($phancum[$kvd], $vitricongty)){
+            if($this->tongkhoangcachtheot($phancum[$kva], $vitricongty,3)
+                    >$this->tongkhoangcachtheot($phancum[$kvd], $vitricongty,3)){
                 return $kvd;
             }else{
                 return $kva;
@@ -362,7 +423,7 @@ class SiteController extends Controller
         $kcm=0;
         foreach ($phancum as $key=>$val){
             if(count($val)>1){
-                $kc=$this->tongkhoangcach($val, $vitricongty);
+                $kc=$this->tongkhoangcachtheot($val, $vitricongty,3);
                 if($kcm<$kc){
                     $kcm=$kc;
                     $kvm = $key;
