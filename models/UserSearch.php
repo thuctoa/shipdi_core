@@ -18,8 +18,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'branch_id', 'role', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'displayname', 'password_hash', 'password_reset_token', 'email'], 'safe'],
+            [['id', 'chinhanh_ma', 'role', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'auth_key', 'displayname', 'password_hash', 'password_reset_token', 'email', 'que', 'sodienthoai', 'diachi', 'sothich', 'ngaysinh'], 'safe'],
         ];
     }
 
@@ -57,11 +57,12 @@ class UserSearch extends User
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'branch_id' => $this->branch_id,
+            'chinhanh_ma' => $this->chinhanh_ma,
             'role' => $this->role,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'ngaysinh' => $this->ngaysinh,
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
@@ -69,7 +70,11 @@ class UserSearch extends User
             ->andFilterWhere(['like', 'displayname', $this->displayname])
             ->andFilterWhere(['like', 'password_hash', $this->password_hash])
             ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'email', $this->email]);
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'que', $this->que])
+            ->andFilterWhere(['like', 'sodienthoai', $this->sodienthoai])
+            ->andFilterWhere(['like', 'diachi', $this->diachi])
+            ->andFilterWhere(['like', 'sothich', $this->sothich]);
 
         return $dataProvider;
     }

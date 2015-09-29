@@ -90,4 +90,7 @@ class AuthItem extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AuthItemChild::className(), ['child' => 'name']);
     }
+    public function getRole(){
+        return Yii::t('app',$this->name);
+    }
 }

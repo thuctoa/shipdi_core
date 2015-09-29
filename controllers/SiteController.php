@@ -442,6 +442,7 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        return $this->redirect('site/signup');
         $company=['x'=>'20.9930851','y'=>'105.8259845'];
         $location = Location::find()->all();
         $company=  $this->tamarray($location);
@@ -713,11 +714,12 @@ class SiteController extends Controller
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
+           
             if ($user = $model->signup()) {
-                
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
-                }
+                    return $this->render('taotaikhoanthanhcong');
+//                if (Yii::$app->getUser()->login($user)) {
+//                    return $this->goHome();
+//                }
             }
         }
 
@@ -726,7 +728,8 @@ class SiteController extends Controller
         ]);
     }
     
-     public function actionRequestPasswordReset()
+
+    public function actionRequestPasswordReset()
     {
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {

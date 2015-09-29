@@ -25,34 +25,41 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
     <div class="wrap">
         <?php
-//            NavBar::begin([
-//                'brandLabel' => 'My Company',
-//                'brandUrl' => Yii::$app->homeUrl,
-//                'options' => [
-//                    'class' => 'navbar-inverse navbar-fixed-top',
-//                ],
-//            ]);
-//            
-//            $items = [
-//                    ['label' => Yii::t('app','Home'), 'url' => ['/site/index']],
-//                    ['label' => Yii::t('app','About'), 'url' => ['/site/about']],
-//                    ['label' => Yii::t('app','Contact'), 'url' => ['/site/contact']],
-//                   
-//                ];
-//            if(Yii::$app->user->isGuest){
-//                $items[] = ['label' => Yii::t('app','Signup'), 'url' => ['/site/signup']];
-//                $items[] = ['label' => Yii::t('app','Login'), 'url' => ['/site/login']];
-//            }else{
-//                 $items[] = ['label' => Yii::t('app','Logout').' (' . Yii::$app->user->identity->username . ')',
-//                            'url' => ['/site/logout'],
-//                            'linkOptions' => ['data-method' => 'post']];
-//            }
-//           
-//            echo Nav::widget([
-//                'options' => ['class' => 'navbar-nav navbar-right'],
-//                'items' => $items,
-//            ]);
-//            NavBar::end();
+            NavBar::begin([
+                'brandLabel' => 'My Company',
+                'brandUrl' => Yii::$app->homeUrl,
+                'options' => [
+                    'class' => 'navbar-inverse navbar-fixed-top',
+                ],
+            ]);
+            
+            $items = [
+                    ['label' => Yii::t('app','Home'), 'url' => ['/site/index']],
+                    ['label' => Yii::t('app','About'), 'url' => ['/site/about']],
+                    ['label' => Yii::t('app','Contact'), 'url' => ['/site/contact']],
+                    
+                
+                ];
+            if(Yii::$app->user->isGuest){
+                $items[] = ['label' => Yii::t('app','Signup'), 'url' => ['/site/signup']];
+                $items[] = ['label' => Yii::t('app','Login'), 'url' => ['/site/login']];
+            }else{
+                 if(Yii::$app->user->can('1. Director')
+                         ||Yii::$app->user->can('2. Branch Director') 
+                         ||Yii::$app->user->can('3. Human Resources Management') 
+                    ){
+                        $items[] = ['label' => 'Quản lý tài khoản', 'url' => ['/user']];
+                 }
+                 $items[] = ['label' => Yii::t('app','Logout').' (' . Yii::$app->user->identity->username . ')',
+                            'url' => ['/site/logout'],
+                            'linkOptions' => ['data-method' => 'post']];
+            }
+           
+            echo Nav::widget([
+                'options' => ['class' => 'navbar-nav navbar-right'],
+                'items' => $items,
+            ]);
+            NavBar::end();
         ?>
         <div class="container">
             <?= Breadcrumbs::widget([

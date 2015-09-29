@@ -26,6 +26,7 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
+    const STATUS_DEFAULT=1;
     const STATUS_ACTIVE = 10;
     const ROLE_USER = 10;
 
@@ -53,8 +54,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            ['status', 'default', 'value' => self::STATUS_DEFAULT],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DEFAULT,self::STATUS_DELETED]],
 
             ['role', 'default', 'value' => self::ROLE_USER],
             ['role', 'in', 'range' => [self::ROLE_USER]],
@@ -90,7 +91,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username, 'status' => [self::STATUS_ACTIVE,self::STATUS_DEFAULT]]);
     }
     
     /**
@@ -275,5 +276,21 @@ class User extends ActiveRecord implements IdentityInterface
     }
     public  function getUser(){
         return $this->hasOne(User::User(), ['id' => 'user_id']);
+    }
+    
+    public function getTrangthai(){
+        if($this->status== self::STATUS_ACTIVE){
+            return 'Hoạt động';
+        }else if($this->status==  self::STATUS_DEFAULT){
+            return 'Đang chờ kích hoạt' ;
+        }
+        return 'Cấm hoạt động';
+    }
+    public function getNgaythangnamsinh(){
+        return date('d-m-Y', strtotime($this->ngaysinh));;
+    }
+    public function getChinhanh()
+    {
+        return $this->hasOne(Chinhanh::className(), ['chinhanh_ma' => 'chinhanh_ma']);
     }
 }

@@ -19,7 +19,7 @@
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
         "scotthuangzl/yii2-google-chart": "dev-master",
-        "mdmsoft/yii2-admin": "*",
+        "mdmsoft/yii2-admin": "~2.0",
         "fruppel/yii2-googlecharts": "*",
         "yii-dream-team/yii2-upload-behavior": "*",
         "2amigos/yii2-date-picker-widget": "~1.0",

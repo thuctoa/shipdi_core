@@ -2,7 +2,9 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-use app\models\Branch;
+use app\models\Chinhanh;
+use dosamigos\datepicker\DatePicker;
+
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model \app\models\SignupForm */
@@ -17,11 +19,33 @@ $this->title = Yii::t('app','Sign up');
         <div class="col-lg-5">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
             <fieldset><legend><?= Yii::t('app', 'User')?></legend>
+                <?= $form->field($model, 'displayname') ?>
                 <?= $form->field($model, 'username') ?>
                 <?= $form->field($model, 'email') ?>
+                <?= $form->field($model, 'sodienthoai') ?>
                 <?= $form->field($model, 'password')->passwordInput() ?>
                 <?= $form->field($model, 'password_repeat')->passwordInput() ?>
-                <?= $form->field($model, 'branch_id')->dropDownList(ArrayHelper::map(Branch::find()->select(['name','address','id'])->all(), 'id', 'name'),['class' => 'form-control inline-block']); ?>
+                <?= $form->field($model, 'chinhanh_ma')
+                    ->dropDownList(ArrayHelper::map(Chinhanh::find()
+                    ->select(['chinhanh_ten','chinhanh_diachi','chinhanh_ma'])
+                    ->all(), 'chinhanh_ma', 'chinhanh_ten'),['class' => 'form-control inline-block']); ?>
+                
+                <?= $form->field($model, 'diachi') ?>
+                <?= $form->field($model, 'que') ?>
+                <?= $form->field($model, 'ngaysinh')->widget(
+                    DatePicker::className(), [
+                        // inline too, not bad
+                        'inline' => FALSE, 
+                        // modify template for custom rendering
+                        //'template' => '<div class="well well-sm" style="background-color: #fff; width:250px">{input}</div>',
+                        'clientOptions' => [
+                            'autoclose' => true,
+                            'format' => 'dd-mm-yyyy',
+                        ]
+                ]);
+                ?>
+                <?= $form->field($model, 'sothich') ?>
+                
 
             </fieldset>
                 <div class="form-group">
