@@ -520,6 +520,7 @@
             draggable: true ,
             radius: 2000,
         });
+        console.log(location);
         str='x='+location[vt1][vt2[0]]
             +'&y='+location[vt1][vt2[1]]
             +'&time='+thoigian
