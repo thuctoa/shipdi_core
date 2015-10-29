@@ -522,10 +522,8 @@
         console.log(Object.keys(location));
         var vt1=Object.keys(location)[2];
         var vt2=Object.keys(location[vt1]);
-        console.log(location[vt1][vt2[0]]);
-        console.log(Object.keys(location[Object.keys(location)[2]])[0]);
-        str='x='+location[Object.keys(location)[0]]
-            +'&y='+location[Object.keys(location)[1]]
+        str='x='+location[vt1][vt2[0]]
+            +'&y='+location[vt1][vt2[1]]
             +'&time='+thoigian
             +'&date='+date
             +'&session='+calamviec
