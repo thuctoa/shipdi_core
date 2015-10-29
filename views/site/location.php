@@ -6,6 +6,7 @@
        
 <link href="../css/maps.css"/>
 <div id="panel" style="margin-top: -50px;">
+    <button vet="11343" jsaction="settings.print" class="widget-settings-button"> <div class="widget-settings-button-icon widget-settings-button-icon-default maps-sprite-settings-print"></div> <div class="widget-settings-button-icon widget-settings-button-icon-hover maps-sprite-settings-print-blue"></div> <label class="widget-settings-button-label">In</label> </button>
 <!--    <input onclick="clearMarkers();" type=button value="Hide Markers">
     <input onclick="showMarkers();" type=button value="Show All Markers">
     <input onclick="deleteMarkers();" type=button value="Delete Markers">-->
