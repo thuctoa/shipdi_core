@@ -1,4 +1,9 @@
 <link href="../css/maps.css"/>
+<button vet="11343" jsaction="settings.print" class="widget-settings-button"> 
+    <div class="widget-settings-button-icon widget-settings-button-icon-default maps-sprite-settings-print"></div> 
+    <div class="widget-settings-button-icon widget-settings-button-icon-hover maps-sprite-settings-print-blue"></div> 
+    <label class="widget-settings-button-label">In</label> 
+</button>
 <div id="map" style="float:left;width:1000px;height:600px;"></div>
 <!--<div id="right-panel">
   <p>Total Distance: <span id="total"></span></p>
