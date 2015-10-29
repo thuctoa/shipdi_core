@@ -260,7 +260,7 @@
                             calamviec:calamviec,
                             date: date,
                         });
-
+                        console.log(place.geometry.location);
                         markers.push(marker);
                         //insert vao database
                         var str='x='+marker.getPosition().lat()
