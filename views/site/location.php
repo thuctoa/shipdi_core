@@ -509,8 +509,11 @@
         var e1          =   document.getElementById("calamviec");
         var calamviec   =   e1.options[e1.selectedIndex].value;
         var date        =   document.getElementById('location-date').value;
+        var vt1=Object.keys(location)[2];
+        var vt2=Object.keys(location[vt1]);
+        
         var marker      =   new google.maps.Marker({
-            position: location,
+           // position: location,
             map: map,
             label: thoigian,
             calamviec:calamviec,
@@ -520,8 +523,7 @@
         });
         console.log(location);
         console.log(Object.keys(location));
-        var vt1=Object.keys(location)[2];
-        var vt2=Object.keys(location[vt1]);
+        
         console.log(location[vt1][vt2[0]]);
         console.log(location[vt1][vt2[1]]);
         str='x='+location[vt1][vt2[0]]
