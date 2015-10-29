@@ -5,7 +5,7 @@
 ?>
        
 <link href="../css/maps.css"/>
-<div id="panel" style="margin-top: -50px;">
+<div id="panel" >
     
 <!--    <input onclick="clearMarkers();" type=button value="Hide Markers">
     <input onclick="showMarkers();" type=button value="Show All Markers">
