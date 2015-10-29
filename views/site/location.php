@@ -216,9 +216,9 @@
         });
         // This event listener will call addMarker() when the map is clicked.
         map.addListener('click', function(event) {
-            if(document.getElementById('idorder').value){
+            
                 addMarker(event.latLng);
-            }
+            
         });
         
         
@@ -242,7 +242,6 @@
             if (places.length == 0) {
               return;
             }
-            if(document.getElementById('idorder').value){
                 // For each place, get the icon, name and location.
                 var bounds = new google.maps.LatLngBounds();
                 places.forEach(function(place) {
@@ -283,10 +282,6 @@
                 });
                 map.fitBounds(bounds);
                 map.setZoom(12);
-            }else{
-                document.getElementById('pac-input').value='';
-                alert('Yêu cầu nhập mã vận đơn bắt buộc.');
-            }
         });
         
         // Adds a marker at the center of the map.
