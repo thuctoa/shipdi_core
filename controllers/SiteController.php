@@ -253,7 +253,7 @@ class SiteController extends Controller
         
         if(isset($_GET['inkhuvuc'])){
             if($_GET['inkhuvuc']!=-1){
-                $vitridau= $vitricongty;
+                $vitridau= $phancum[$_GET['inkhuvuc']][0];
                 $bandokhuvuc=$this->bandokhuvuc($phancum[$_GET['inkhuvuc']],$vitridau);
                 
                 $sobando=[];
