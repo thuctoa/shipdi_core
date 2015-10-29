@@ -32,7 +32,7 @@
     }
     $inmap=$inmap.$endmap;
 ?>
-<a href="<?=$inmap?>">
+<a href="<?=$inmap?>" target="_blank" >
     In bản đồ của google
 </a>
 <script>
