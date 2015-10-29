@@ -39,7 +39,7 @@
             ])
         ?>
     </div>
-    <div class="col-lg-4">
+<!--    <div class="col-lg-4">
         <div class="row">
             <div class="input-group " >
                 <span class="input-group-addon" id="basic-addon1">Số Shiper:</span>
@@ -77,15 +77,15 @@
                 <span class="input-group-addon" id="basic-addon1"> giờ </span>
             </div>
         </div>
-    </div>
+    </div>-->
     <div class="col-lg-2">
 <!--        <input onclick="phanchia();" type=button value="Phân chia">-->
-        <div class="input-group">
+<!--        <div class="input-group">
             <input type="text" id="xoamavandon" class="form-control" placeholder="Mã vận đơn">
             <span class="input-group-btn">
                 <button class="btn btn-default" onclick="xoamavandon();" type="button">Xóa!</button>
             </span>
-          </div>
+        </div>-->
         <input style="width: 78px;" class= "tach" onclick="xoacuoi();" type=button value="Xóa cuối">
         <input style="width: 78px;" class= "tach" onclick="xoahet();" type=button value="Xóa hết">
         <input class="btn-info tach" 
