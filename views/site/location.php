@@ -260,7 +260,6 @@
                             calamviec:calamviec,
                             date: date,
                         });
-                        console.log(place.geometry.location);
                         markers.push(marker);
                         //insert vao database
                         var str='x='+marker.getPosition().lat()
@@ -521,6 +520,7 @@
             draggable: true ,
             radius: 2000,
         });
+        console.log(location);
         str='x='+location[vt1][vt2[0]]
             +'&y='+location[vt1][vt2[1]]
             +'&time='+thoigian
