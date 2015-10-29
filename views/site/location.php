@@ -513,7 +513,7 @@
         var vt2=Object.keys(location[vt1]);
         
         var marker      =   new google.maps.Marker({
-           // position: location,
+            position: location[vt1][vt2],
             map: map,
             label: thoigian,
             calamviec:calamviec,
@@ -523,9 +523,6 @@
         });
         console.log(location);
         console.log(Object.keys(location));
-        
-        console.log(location[vt1][vt2[0]]);
-        console.log(location[vt1][vt2[1]]);
         str='x='+location[vt1][vt2[0]]
             +'&y='+location[vt1][vt2[1]]
             +'&time='+thoigian
