@@ -22,7 +22,20 @@
             }
     }
 ?>
-
+<a href="https://www.google.com/maps/dir/21.017736,105.8414898/21.001174,105.8185587/21.0300178,105.8120355/@21.0357902,105.8352953,13z/data=!4m2!4m1!3e0">
+ Ban do
+</a>
+<?php
+    $inmap='https://www.google.com/maps/dir/';
+    $endmap='@21.0357902,105.8352953,13z/data=!4m2!4m1!3e0';
+    foreach ($array as $val){
+      $inmap=$inmap.$val['x'].','.$val['y'].'/';
+    }
+    $inmap=$inmap.$endmap;
+?>
+<a href="<?=$inmap?>">
+ Ban do chuan
+</a>
 <script>
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
