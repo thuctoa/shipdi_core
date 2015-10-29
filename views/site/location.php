@@ -520,6 +520,7 @@
         });
         console.log(location);
         console.log(Object.keys(location));
+        console.log(Object.keys(location)[2]);
         str='x='+location[Object.keys(location)[0]]
             +'&y='+location[Object.keys(location)[1]]
             +'&time='+thoigian
