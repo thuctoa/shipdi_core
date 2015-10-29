@@ -217,7 +217,7 @@
         // This event listener will call addMarker() when the map is clicked.
         map.addListener('click', function(event) {
             
-                addMarker(event);
+                addMarker(event.latLng);
             
         });
         
@@ -508,11 +508,8 @@
         var e1          =   document.getElementById("calamviec");
         var calamviec   =   e1.options[e1.selectedIndex].value;
         var date        =   document.getElementById('location-date').value;
-        var vt1=Object.keys(location)[2];
-        var vt2=Object.keys(location[vt1]);
-        
         var marker      =   new google.maps.Marker({
-            position: location.latLng,
+            position: location,
             map: map,
             label: thoigian,
             calamviec:calamviec,
@@ -520,10 +517,8 @@
             draggable: true ,
             radius: 2000,
         });
-        console.log(marker.getPosition().lat());
-        console.log(location);
-        str='x='+location[vt1][vt2[0]]
-            +'&y='+location[vt1][vt2[1]]
+        str='x='+marker.getPosition().lat()
+            +'&y='+marker.getPosition().lng()
             +'&time='+thoigian
             +'&date='+date
             +'&session='+calamviec
