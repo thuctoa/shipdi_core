@@ -28,6 +28,7 @@
 <?php
     $inmap='https://www.google.com/maps/dir/';
     $endmap='@21.0357902,105.8352953,13z/data=!4m2!4m1!3e0';
+    $array=$sobando[$_GET['tam']];
     foreach ($array as $val){
       $inmap=$inmap.$val['x'].','.$val['y'].'/';
     }
