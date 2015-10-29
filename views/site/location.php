@@ -518,6 +518,7 @@
             draggable: true ,
             radius: 2000,
         });
+        console.log(location);
         str='x='+location[Object.keys(location)[0]]
             +'&y='+location[Object.keys(location)[1]]
             +'&time='+thoigian
