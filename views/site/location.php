@@ -268,7 +268,7 @@
                             +'&time='+thoigian
                             +'&date='+date
                             +'&session='+calamviec
-                            +'&idorder='+document.getElementById('idorder').value;
+                            +'&idorder='+'thuc';//document.getElementById('idorder').value;
                         insertlocation(str);
                     document.getElementById('idorder').value='';
                     document.getElementById('pac-input').value='';
@@ -523,7 +523,7 @@
             +'&time='+thoigian
             +'&date='+date
             +'&session='+calamviec
-            +'&idorder='+document.getElementById('idorder').value;
+            +'&idorder='+ 'thuc';//document.getElementById('idorder').value;
         insertlocation(str);
         document.getElementById('idorder').value='';
         markers.push(marker);
